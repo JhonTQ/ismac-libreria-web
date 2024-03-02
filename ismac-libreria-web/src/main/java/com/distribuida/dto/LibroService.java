@@ -21,7 +21,7 @@ public interface LibroService {
 	public List<Libro> findAll(String busqueda);
 	
 	public void add(int idLibro, String titulo, String editorial, int numPaginas, String edicion, String idioma,
-			Date fechaPublicacion, String descripcion, String tipoPasta, String iSBN, String numEjemplares,
+			Date fechaPublicacion, String descripcion, String tipoPasta, String ISBN, String numEjemplares,
 			String portada, String presentacion, Double precio, int categoria, int autor);
 	
 	public void up(int idLibro, String titulo, String editorial, int numPaginas, String edicion, String idioma,
