@@ -4,14 +4,18 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.distribuida.dto.AutorService;
+import com.distribuida.dto.CategoriaService;
 import com.distribuida.dto.LibroService;
 import com.distribuida.entities.Libro;
 
@@ -22,6 +26,12 @@ public class LibroController {
 	@Autowired
 	private LibroService libroService;
 	
+	@Autowired	
+	private CategoriaService categoriaService;
+	
+	
+	@Autowired	
+	private AutorService autorService;
 //	
 	@GetMapping("/findAll")
 	public String findAll(Model model) {
@@ -37,14 +47,19 @@ public class LibroController {
 	@GetMapping("/findOne")
 	public String findOne(@RequestParam("idLibro")@Nullable Integer idLibro
 			,@RequestParam("opcion")@Nullable Integer opcion
-			,Model model
+			,ModelMap modelMap
 			) {
 		
 		if(idLibro!= null) {
 			Libro libro= libroService.findOne(idLibro);
-			model.addAttribute("libro", libro);
+			modelMap.addAttribute("libro", libro);
 		}
-		if(idLibro==1)return "libros-add";
+		
+		modelMap.addAttribute("categorias", categoriaService.findAll());
+		modelMap.addAttribute("autores", autorService.findAll());
+		
+		
+		if(opcion == 1)return "libros-add";
 		else return "libros-del";
 		}
 	
@@ -55,7 +70,7 @@ public class LibroController {
 			,@RequestParam("numPaginas")@Nullable Integer numPaginas
 			,@RequestParam("edicion")@Nullable String edicion
 			,@RequestParam("idioma")@Nullable String idioma
-			,@RequestParam("fechaPublicacion")@Nullable Date fechaPublicacion
+			,@RequestParam("fechaPublicacion")@Nullable @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaPublicacion
 			,@RequestParam("descripcion")@Nullable String descripcion
 			,@RequestParam("tipoPasta")@Nullable String tipoPasta
 			,@RequestParam("ISBN")@Nullable String ISBN
@@ -80,7 +95,7 @@ public class LibroController {
 	@GetMapping ("/del")
 	public String del(@RequestParam("idLibro")@Nullable Integer idLibro) {
 		libroService.del(idLibro);
-		return "redirect;/libros/findAll";
+		return "redirect:/libros/findAll";
 	}
 
 }
